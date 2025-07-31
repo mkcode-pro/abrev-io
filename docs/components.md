@@ -388,3 +388,377 @@ test('should add new link when form is submitted', () => {
 - **Tree shaking** de ícones não utilizados
 - **Code splitting** por funcionalidade
 - **Dynamic imports** para componentes grandes
+
+## Componentes Mobile-First
+
+### Componentes de Layout Mobile
+
+#### MobileLayout
+**Localização**: `components/layout/MobileLayout.tsx`
+
+```typescript
+interface MobileLayoutProps {
+  children: ReactNode
+  className?: string
+  hasBottomNav?: boolean  // Para navegação inferior
+  hasTopNav?: boolean     // Para header fixo
+}
+
+// Uso
+<MobileLayout hasTopNav hasBottomNav>
+  {children}
+</MobileLayout>
+```
+
+**Funcionalidades**:
+- Container principal para layouts mobile
+- Padding automático para navigation areas
+- Background gradient otimizado
+- Safe area handling
+
+#### ResponsiveContainer
+**Localização**: `components/layout/ResponsiveContainer.tsx`
+
+```typescript
+interface ResponsiveContainerProps {
+  children: ReactNode
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'full'
+  padding?: 'none' | 'sm' | 'md' | 'lg'
+}
+
+// Tamanhos adaptativos
+const sizeClasses = {
+  sm: 'max-w-sm',    // 384px
+  md: 'max-w-md',    // 448px  
+  lg: 'max-w-4xl',   // 896px
+  xl: 'max-w-6xl',   // 1152px
+  full: 'max-w-full' // 100%
+}
+```
+
+**Features**:
+- Containers responsivos inteligentes
+- Padding contextual mobile/desktop
+- Centralização automática
+- Breakpoint-aware sizing
+
+#### ResponsiveGrid
+**Localização**: `components/layout/ResponsiveGrid.tsx`
+
+```typescript
+interface ResponsiveGridProps {
+  cols?: {
+    mobile?: number    // Colunas no mobile
+    tablet?: number    // Colunas no tablet  
+    desktop?: number   // Colunas no desktop
+  }
+  gap?: 'sm' | 'md' | 'lg'
+}
+
+// Uso típico
+<ResponsiveGrid 
+  cols={{ mobile: 1, tablet: 2, desktop: 3 }}
+  gap="md"
+>
+  {items}
+</ResponsiveGrid>
+```
+
+### Componentes de Interface Mobile
+
+#### MobileHeader
+**Localização**: `components/mobile/MobileHeader.tsx`
+
+```typescript
+interface MobileHeaderProps {
+  title: string
+  subtitle?: string
+  showBack?: boolean      // Botão voltar
+  showSettings?: boolean  // Ícone configurações
+  actions?: ReactNode     // Ações customizadas
+}
+
+// Exemplo no Editor
+<MobileHeader 
+  title="Editor de Bio"
+  subtitle="Personalize seu perfil"
+  showBack
+  actions={<SaveButton />}
+/>
+```
+
+**Características**:
+- Header fixo com backdrop blur
+- Navegação contextual
+- Integração com theme selector
+- Safe area support
+
+#### MobileCard
+**Localização**: `components/mobile/MobileCard.tsx`
+
+```typescript
+interface MobileCardProps {
+  title: string
+  subtitle?: string
+  icon?: ReactNode
+  variant?: 'default' | 'action' | 'stat'
+  onClick?: () => void
+}
+
+// Card interativo
+<MobileCard
+  title="Bio Links"
+  subtitle="3 links ativos"
+  icon={<Link className="w-5 h-5" />}
+  variant="action"
+  onClick={() => navigate('/editor')}
+/>
+```
+
+**Otimizações Mobile**:
+- Touch targets de 44px mínimo
+- Feedback visual otimizado
+- Glassmorphism responsivo
+- Hover states condicionais
+
+#### MobileActionSheet
+**Localização**: `components/mobile/MobileActionSheet.tsx`
+
+```typescript
+interface MobileActionSheetProps {
+  isOpen: boolean
+  onClose: () => void
+  title?: string
+  children: ReactNode
+}
+
+// Action sheet nativo
+<MobileActionSheet 
+  isOpen={showActions}
+  onClose={() => setShowActions(false)}
+  title="Criar Novo"
+>
+  <Button>Criar Bio Link</Button>
+  <Button>Encurtar URL</Button>
+</MobileActionSheet>
+```
+
+**UX Nativa**:
+- Slide up animation
+- Backdrop blur overlay
+- Safe area bottom padding
+- Swipe-to-dismiss (futuro)
+
+#### MobileTabs
+**Localização**: `components/mobile/MobileTabs.tsx`
+
+```typescript
+interface MobileTabsProps {
+  tabs: {
+    id: string
+    label: string
+    content: ReactNode
+    icon?: ReactNode
+  }[]
+  activeTab: string
+  onTabChange: (tabId: string) => void
+}
+
+// Tabs otimizadas
+<MobileTabs
+  tabs={[
+    { id: 'editor', label: 'Editor', icon: <Edit />, content: <EditorPanel /> },
+    { id: 'preview', label: 'Preview', icon: <Eye />, content: <PreviewPanel /> }
+  ]}
+  activeTab={currentTab}
+  onTabChange={setCurrentTab}
+/>
+```
+
+**Mobile Features**:
+- Sticky tab headers
+- Smooth content transitions
+- Touch-friendly tap targets
+- Visual active indicators
+
+#### MobileOptimizedButton
+**Localização**: `components/ui/mobile-optimized-button.tsx`
+
+```typescript
+// Tamanhos otimizados para mobile
+const touchTargetSizes = {
+  sm: 'h-10 px-4',      // 40px height (mobile)
+  md: 'h-12 px-6',      // 48px height (mobile)  
+  lg: 'h-14 px-8'       // 56px height (mobile)
+}
+
+// Auto-detecção de hover support
+const supportsHover = () => 
+  window.matchMedia('(hover: hover)').matches
+```
+
+**Otimizações**:
+- Touch targets adaptativos
+- Hover states condicionais
+- Feedback tátil (scale transform)
+- Performance otimizada
+
+### Hook Mobile Especializado
+
+#### useMobileOptimized
+**Localização**: `hooks/useMobileOptimized.tsx`
+
+```typescript
+interface UseMobileOptimizedReturn {
+  isMobile: boolean
+  orientation: 'portrait' | 'landscape'
+  viewportHeight: number
+  isLandscape: boolean
+  isPortrait: boolean
+  getOptimizedHeight: (percentage?: number) => string
+  supportsHover: () => boolean
+  getTouchTargetSize: (size?: 'sm' | 'md' | 'lg') => string
+}
+
+// Uso nos componentes
+const { 
+  isMobile, 
+  orientation,
+  viewportHeight,
+  getTouchTargetSize 
+} = useMobileOptimized()
+
+// Touch target otimizado
+<Button className={getTouchTargetSize('md')}>
+  Clique aqui
+</Button>
+```
+
+**Funcionalidades Avançadas**:
+- **Detecção de orientação**: Portrait/landscape automático
+- **Altura otimizada**: Considerando teclado virtual
+- **Touch targets**: Tamanhos adaptativos por contexto
+- **Hover detection**: Suporte condicional a hover
+- **Viewport real**: Altura real sem interferências
+
+### Padrões de Implementação Mobile
+
+#### Layout Responsivo
+```typescript
+// Pattern para páginas mobile-first
+export default function MobilePage() {
+  const { isMobile } = useMobileOptimized()
+  
+  return (
+    <MobileLayout hasTopNav={isMobile} hasBottomNav={isMobile}>
+      <ResponsiveContainer size="lg" padding="md">
+        <ResponsiveGrid 
+          cols={{ mobile: 1, tablet: 2, desktop: 3 }}
+          gap="md"
+        >
+          {/* Conteúdo */}
+        </ResponsiveGrid>
+      </ResponsiveContainer>
+    </MobileLayout>
+  )
+}
+```
+
+#### Navegação Contextual
+```typescript
+// Headers adaptativos por página
+const getPageHeader = (page: string) => {
+  switch (page) {
+    case 'dashboard':
+      return <MobileHeader title="Dashboard" showSettings />
+    case 'editor':
+      return <MobileHeader title="Editor" showBack actions={<SaveButton />} />
+    case 'analytics':
+      return <MobileHeader title="Analytics" showBack />
+  }
+}
+```
+
+#### Performance Mobile
+```typescript
+// Lazy loading condicional
+const MobileComponent = lazy(() => 
+  isMobile 
+    ? import('./MobileComponent')
+    : import('./DesktopComponent')
+)
+
+// Renders condicionais
+{isMobile ? (
+  <MobileActionSheet {...props} />
+) : (
+  <DesktopModal {...props} />
+)}
+```
+
+### Testes Mobile
+
+#### Responsive Testing
+```typescript
+// Hook de teste para diferentes viewports
+const { setViewport } = useTestViewport()
+
+test('should render mobile layout correctly', () => {
+  setViewport('mobile')
+  render(<Dashboard />)
+  
+  expect(screen.getByRole('navigation')).toHaveClass('bottom-nav')
+  expect(screen.getByText('Dashboard')).toBeInTheDocument()
+})
+```
+
+#### Touch Testing
+```typescript
+// Testes de interação touch
+test('should handle touch interactions', () => {
+  render(<MobileCard onClick={mockClick} />)
+  
+  const card = screen.getByRole('button')
+  fireEvent.touchStart(card)
+  fireEvent.touchEnd(card)
+  
+  expect(mockClick).toHaveBeenCalled()
+})
+```
+
+### Acessibilidade Mobile
+
+#### Touch Targets
+- **Mínimo 44px**: Para todos os elementos clicáveis
+- **Espaçamento adequado**: 8px entre elementos
+- **Feedback visual**: Scale transform em touch
+
+#### Navegação por Teclado
+- **Focus visible**: Indicadores claros
+- **Tab order**: Lógico e linear
+- **Skip links**: Para navegação rápida
+
+#### Screen Readers
+- **ARIA labels**: Descritivos e contextuais
+- **Live regions**: Para feedback dinâmico
+- **Semantic markup**: HTML estruturado
+
+### Próximas Implementações Mobile
+
+#### Gestos e Interações
+- **Swipe gestures**: Para navegação
+- **Pull-to-refresh**: Para listas
+- **Long press**: Para ações contextuais
+- **Pinch-to-zoom**: Para preview
+
+#### PWA Features
+- **Splash screens**: Customizadas por tema
+- **App icons**: Múltiplos tamanhos
+- **Offline support**: Service worker
+- **Push notifications**: Engagement
+
+#### Performance Avançada
+- **Virtual scrolling**: Para listas longas
+- **Image optimization**: WebP + lazy loading
+- **Bundle optimization**: Mobile-specific chunks
+- **Prefetching**: Rotas críticas

@@ -30,6 +30,8 @@ Abrev.io é uma aplicação SaaS brasileira construída com React + TypeScript n
 src/
 ├── components/          # Componentes reutilizáveis
 │   ├── ui/             # Componentes base (shadcn)
+│   ├── layout/         # Componentes de layout responsivo
+│   ├── mobile/         # Componentes mobile-first específicos
 │   ├── dashboard/      # Componentes específicos do dashboard
 │   ├── biolink-editor/ # Editor de biolink
 │   └── modals/         # Modais e dialogs
@@ -40,6 +42,113 @@ src/
 ├── integrations/       # Integrações externas (Supabase)
 └── assets/            # Assets estáticos
 ```
+
+## Arquitetura Mobile-First
+
+### Filosofia de Design Responsivo
+
+A arquitetura do Abrev.io segue uma abordagem **mobile-first** verdadeira, onde:
+
+1. **Base Mobile**: Todo componente é projetado primeiro para mobile
+2. **Progressive Enhancement**: Funcionalidades desktop são adicionadas incrementalmente
+3. **Conditional Rendering**: Componentes específicos por dispositivo quando necessário
+4. **Performance-Aware**: Otimizações específicas para dispositivos móveis
+
+### Camadas da Arquitetura Mobile
+
+#### 1. Detection Layer
+```typescript
+// hooks/useMobileOptimized.tsx
+- Device detection (mobile/desktop)
+- Orientation tracking (portrait/landscape)  
+- Viewport monitoring (real height/width)
+- Touch support detection
+- Hover capability detection
+```
+
+#### 2. Layout Layer
+```typescript
+// components/layout/
+├── MobileLayout.tsx        # Container principal mobile
+├── ResponsiveContainer.tsx # Containers adaptativos
+└── ResponsiveGrid.tsx      # Sistema de grid inteligente
+```
+
+#### 3. Component Layer  
+```typescript
+// components/mobile/
+├── MobileHeader.tsx        # Headers contextuais
+├── MobileCard.tsx         # Cards touch-optimized
+├── MobileActionSheet.tsx  # Action sheets nativos
+├── MobileTabs.tsx         # Tab navigation mobile
+└── MobileOptimizedButton.tsx # Botões com touch targets
+```
+
+#### 4. Interaction Layer
+```typescript
+// Otimizações de interação
+- Touch targets mínimos de 44px
+- Hover states condicionais
+- Gesture support (futuro)
+- Haptic feedback (futuro)
+```
+
+### Padrões de Implementação
+
+#### Conditional Components
+```typescript
+// Pattern para componentes adaptativos
+const { isMobile } = useMobileOptimized()
+
+return isMobile ? (
+  <MobileComponent {...props} />
+) : (
+  <DesktopComponent {...props} />
+)
+```
+
+#### Responsive Hooks
+```typescript
+// Hook principal para otimizações mobile
+const {
+  isMobile,           // Boolean de detecção
+  orientation,        // 'portrait' | 'landscape'
+  viewportHeight,     // Altura real do viewport
+  getTouchTargetSize, // Função para touch targets
+  supportsHover       // Detecção de hover
+} = useMobileOptimized()
+```
+
+#### Layout Composition
+```typescript
+// Composição de layouts responsivos
+<MobileLayout hasTopNav={isMobile} hasBottomNav={isMobile}>
+  <ResponsiveContainer size="lg" padding="md">
+    <ResponsiveGrid cols={{ mobile: 1, tablet: 2, desktop: 3 }}>
+      {content}
+    </ResponsiveGrid>
+  </ResponsiveContainer>
+</MobileLayout>
+```
+
+### Performance Mobile
+
+#### Bundle Optimization
+- **Conditional Loading**: Componentes mobile vs desktop
+- **Lazy Loading**: Componentes pesados carregados sob demanda  
+- **Tree Shaking**: Remoção de código não utilizado
+- **Code Splitting**: Separação mobile/desktop quando beneficial
+
+#### Runtime Optimization
+- **Debounced Resize**: Listeners otimizados para resize/orientation
+- **Memoization**: Cálculos de layout memoizados
+- **Touch Optimization**: Event listeners otimizados para touch
+- **Viewport Management**: Cálculo eficiente de dimensões
+
+#### Memory Management
+- **Component Cleanup**: Remoção adequada de listeners
+- **State Optimization**: Estado local vs global otimizado
+- **Effect Dependencies**: Dependencies arrays otimizadas
 
 ## Fluxo de Dados
 

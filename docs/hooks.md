@@ -314,6 +314,124 @@ function useLocalStorage<T>(
 
   return [storedValue, setValue]
 }
+
+### useMobileOptimized.tsx
+
+**Localização**: `hooks/useMobileOptimized.tsx`
+
+```typescript
+interface UseMobileOptimizedReturn {
+  isMobile: boolean
+  orientation: 'portrait' | 'landscape'
+  viewportHeight: number
+  isLandscape: boolean
+  isPortrait: boolean
+  getOptimizedHeight: (percentage?: number) => string
+  supportsHover: () => boolean
+  getTouchTargetSize: (size?: 'sm' | 'md' | 'lg') => string
+}
+
+export function useMobileOptimized(): UseMobileOptimizedReturn {
+  const [isMobile, setIsMobile] = useState(false)
+  const [orientation, setOrientation] = useState<'portrait' | 'landscape'>('portrait')
+  const [viewportHeight, setViewportHeight] = useState(window.innerHeight)
+
+  useEffect(() => {
+    const checkMobile = () => {
+      const mobile = window.innerWidth < 768
+      setIsMobile(mobile)
+    }
+
+    const checkOrientation = () => {
+      const isLandscape = window.innerWidth > window.innerHeight
+      setOrientation(isLandscape ? 'landscape' : 'portrait')
+      setViewportHeight(window.innerHeight)
+    }
+
+    checkMobile()
+    checkOrientation()
+
+    window.addEventListener('resize', checkMobile)
+    window.addEventListener('resize', checkOrientation)
+    window.addEventListener('orientationchange', checkOrientation)
+
+    return () => {
+      window.removeEventListener('resize', checkMobile)
+      window.removeEventListener('resize', checkOrientation)
+      window.removeEventListener('orientationchange', checkOrientation)
+    }
+  }, [])
+
+  const getOptimizedHeight = useCallback((percentage: number = 100): string => {
+    // Considera teclado virtual no mobile
+    const baseHeight = isMobile ? viewportHeight * 0.85 : viewportHeight
+    return `${(baseHeight * percentage) / 100}px`
+  }, [isMobile, viewportHeight])
+
+  const supportsHover = useCallback((): boolean => {
+    return window.matchMedia('(hover: hover)').matches
+  }, [])
+
+  const getTouchTargetSize = useCallback((size: 'sm' | 'md' | 'lg' = 'md'): string => {
+    if (!isMobile) {
+      // Desktop sizes
+      const sizes = {
+        sm: 'h-8 min-h-8 px-3',
+        md: 'h-10 min-h-10 px-4', 
+        lg: 'h-12 min-h-12 px-6'
+      }
+      return sizes[size]
+    }
+
+    // Mobile touch targets (minimum 44px)
+    const mobileSizes = {
+      sm: 'h-10 min-h-10 px-4',  // 40px
+      md: 'h-12 min-h-12 px-6',  // 48px
+      lg: 'h-14 min-h-14 px-8'   // 56px
+    }
+    return mobileSizes[size]
+  }, [isMobile])
+
+  return {
+    isMobile,
+    orientation,
+    viewportHeight,
+    isLandscape: orientation === 'landscape',
+    isPortrait: orientation === 'portrait',
+    getOptimizedHeight,
+    supportsHover,
+    getTouchTargetSize
+  }
+}
+```
+
+**Casos de Uso**:
+```typescript
+// Em componentes
+const { isMobile, getTouchTargetSize, supportsHover } = useMobileOptimized()
+
+// Touch targets otimizados
+<Button className={getTouchTargetSize('md')}>
+  {isMobile ? 'Toque' : 'Clique'}
+</Button>
+
+// Hover condicional
+<div className={cn(
+  'card',
+  supportsHover() && 'hover:scale-105'
+)}>
+
+// Layout por orientação
+{isLandscape ? <LandscapeView /> : <PortraitView />}
+```
+
+**Funcionalidades Avançadas**:
+- **Auto-detecção de dispositivo**: Mobile vs desktop
+- **Orientação dinâmica**: Portrait/landscape com eventos
+- **Altura otimizada**: Considerando teclado virtual
+- **Touch targets inteligentes**: Tamanhos adaptativos
+- **Hover support**: Detecção de suporte real a hover
+- **Performance**: Listeners otimizados com cleanup
 ```
 
 ### useFileUpload.tsx

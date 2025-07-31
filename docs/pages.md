@@ -300,3 +300,190 @@ O Abrev.io é estruturado como uma SPA (Single Page Application) com roteamento 
 2. **Breadcrumbs**: Navegação contextual
 3. **Search**: Busca global
 4. **Shortcuts**: Atalhos de teclado
+
+## Página Mobile Demo (`/demo` - MobileDemo.tsx)
+
+**Propósito**: Demonstração completa dos componentes mobile-first implementados
+
+**Layout**: Single page com tabs para diferentes demonstrações
+
+**Componentes Demonstrados**:
+- `MobileLayout` - Container mobile principal
+- `ResponsiveContainer` - Containers adaptativos
+- `ResponsiveGrid` - Sistema de grid responsivo
+- `MobileCard` - Cards otimizados para touch
+- `MobileActionSheet` - Action sheets nativos
+- `MobileTabs` - Sistema de abas mobile
+- `MobileOptimizedButton` - Botões com touch targets
+- `MobileHeader` - Headers contextuais
+
+**Seções da Demo**:
+
+### Overview Tab
+```typescript
+// Grid responsivo com cards interativos
+<ResponsiveGrid cols={{ mobile: 1, tablet: 2, desktop: 3 }}>
+  <MobileCard
+    title="Bio Links"
+    subtitle="3 links ativos"
+    icon={<Link />}
+    variant="action"
+    onClick={() => navigate('/editor')}
+  />
+  <MobileCard
+    title="URLs Encurtadas"
+    subtitle="12 URLs criadas"
+    icon={<Settings />}
+    variant="stat"
+  />
+  <MobileCard
+    title="Analytics"
+    subtitle="2.540 visualizações"
+    icon={<Eye />}
+    variant="default"
+  />
+</ResponsiveGrid>
+```
+
+### Links Tab
+```typescript
+// Lista de bio links com ações
+{Array.from({ length: 5 }, (_, i) => (
+  <MobileCard
+    key={i}
+    title={`Bio Link ${i}`}
+    subtitle={`@usuario${i}`}
+    variant="action"
+    onClick={() => toast({ title: `Bio Link ${i} selecionado` })}
+  >
+    <div className="flex gap-2 mt-3">
+      <MobileOptimizedButton 
+        size="sm" 
+        variant="outline"
+        onClick={() => navigate('/editor')}
+      >
+        Editar
+      </MobileOptimizedButton>
+      <MobileOptimizedButton 
+        size="sm" 
+        variant="ghost"
+        onClick={() => window.open(`/@usuario${i}`, '_blank')}
+      >
+        Ver Página
+      </MobileOptimizedButton>
+    </div>
+  </MobileCard>
+))}
+```
+
+### Components Tab
+```typescript
+// Demonstração de componentes
+<div className="space-y-6">
+  <div>
+    <h3 className="text-lg font-semibold mb-3">Touch Targets</h3>
+    <div className="flex flex-wrap gap-3">
+      <MobileOptimizedButton size="sm">Small (40px)</MobileOptimizedButton>
+      <MobileOptimizedButton size="md">Medium (48px)</MobileOptimizedButton>
+      <MobileOptimizedButton size="lg">Large (56px)</MobileOptimizedButton>
+    </div>
+  </div>
+  
+  <div>
+    <h3 className="text-lg font-semibold mb-3">Button Variants</h3>
+    <div className="flex flex-wrap gap-3">
+      <MobileOptimizedButton variant="default">Default</MobileOptimizedButton>
+      <MobileOptimizedButton variant="outline">Outline</MobileOptimizedButton>
+      <MobileOptimizedButton variant="ghost">Ghost</MobileOptimizedButton>
+      <MobileOptimizedButton variant="gradient">Gradient</MobileOptimizedButton>
+    </div>
+  </div>
+</div>
+```
+
+**Mobile Action Sheet**:
+```typescript
+<MobileActionSheet 
+  isOpen={showActionSheet}
+  onClose={() => setShowActionSheet(false)}
+  title="Ações Rápidas"
+>
+  <div className="space-y-3">
+    <MobileOptimizedButton 
+      variant="gradient" 
+      className="w-full"
+      onClick={() => {
+        navigate('/editor')
+        setShowActionSheet(false)
+        toast({ title: "Navegando para o editor" })
+      }}
+    >
+      <Plus className="w-4 h-4 mr-2" />
+      Criar Bio Link
+    </MobileOptimizedButton>
+    
+    <MobileOptimizedButton 
+      variant="outline" 
+      className="w-full border-white/20 text-white hover:bg-white/10"
+      onClick={() => {
+        navigate('/dashboard')
+        setShowActionSheet(false)
+        toast({ title: "Navegando para encurtador" })
+      }}
+    >
+      Encurtar URL
+    </MobileOptimizedButton>
+  </div>
+</MobileActionSheet>
+```
+
+**Funcionalidades Implementadas**:
+- ✅ Navegação por tabs mobile-friendly
+- ✅ Cards interativos com feedback visual
+- ✅ Action sheets nativos do iOS/Android
+- ✅ Touch targets otimizados (44px+)
+- ✅ Feedback via toasts contextuais
+- ✅ Navegação programática integrada
+- ✅ Layouts responsivos demonstrativos
+- ✅ Theme switching em tempo real
+
+**Hook Utilizado**:
+```typescript
+const { 
+  isMobile, 
+  orientation, 
+  getTouchTargetSize,
+  supportsHover 
+} = useMobileOptimized()
+```
+
+**Estado**: ✅ **Completo e Funcional**
+
+### Mobile-First Patterns Demonstrados
+
+#### 1. Layout Adaptation
+- Container responsivo com padding contextual
+- Grid que adapta colunas por breakpoint
+- Componentes que se ajustam automaticamente
+
+#### 2. Touch Optimization
+- Botões com tamanhos mínimos de 44px
+- Espaçamento adequado entre elementos
+- Feedback visual em interações
+
+#### 3. Navigation Patterns
+- Header móvel com navegação contextual
+- Action sheets para ações secundárias
+- Tab navigation otimizada para touch
+
+#### 4. Performance
+- Renders condicionais por dispositivo
+- Lazy loading de componentes pesados
+- Otimizações de hover para dispositivos touch
+
+#### 5. UX Native-like
+- Animações suaves e naturais
+- Feedback imediato em interações
+- Padrões familiares do mobile
+
+**Acesso**: A demo está disponível em `/demo` e serve como showcase completo das capacidades mobile-first da plataforma.

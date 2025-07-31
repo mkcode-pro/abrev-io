@@ -221,12 +221,98 @@ if (import.meta.env.DEV) {
 }
 ```
 
+## Implementação Mobile-First
+
+### Arquitetura Mobile
+O frontend implementa uma arquitetura mobile-first completa com:
+
+#### Sistema de Detecção
+```typescript
+// Hook principal para otimizações mobile
+const useMobileOptimized = () => {
+  return {
+    isMobile: boolean,              // Detecção de dispositivo móvel
+    orientation: 'portrait' | 'landscape', // Orientação atual
+    viewportHeight: number,         // Altura real do viewport
+    getTouchTargetSize: (size) => string, // Touch targets otimizados
+    supportsHover: () => boolean    // Suporte a hover
+  }
+}
+```
+
+#### Componentes de Layout Mobile
+```typescript
+// Layout containers responsivos
+<MobileLayout hasTopNav hasBottomNav>
+  <ResponsiveContainer size="lg" padding="md">
+    <ResponsiveGrid cols={{ mobile: 1, tablet: 2, desktop: 3 }}>
+      {content}
+    </ResponsiveGrid>
+  </ResponsiveContainer>
+</MobileLayout>
+```
+
+#### Componentes Mobile Especializados
+- **MobileHeader**: Headers contextuais com navegação
+- **MobileCard**: Cards otimizados para touch
+- **MobileActionSheet**: Action sheets nativos
+- **MobileTabs**: Sistema de abas mobile-friendly  
+- **MobileOptimizedButton**: Botões com touch targets adequados
+
+### Touch Optimization
+```typescript
+// Touch targets adaptativos
+const TouchButton = () => {
+  const { getTouchTargetSize } = useMobileOptimized()
+  
+  return (
+    <Button className={getTouchTargetSize('md')}>
+      {/* Garante 48px de altura no mobile */}
+    </Button>
+  )
+}
+```
+
+### Conditional Rendering
+```typescript
+// Renderização condicional por dispositivo
+const AdaptiveComponent = () => {
+  const { isMobile, supportsHover } = useMobileOptimized()
+  
+  return (
+    <div className={cn(
+      'component-base',
+      isMobile && 'mobile-specific',
+      supportsHover() && 'hover:scale-105'
+    )}>
+      {isMobile ? <MobileInterface /> : <DesktopInterface />}
+    </div>
+  )
+}
+```
+
+### Página de Demonstração
+```typescript
+// /demo - Showcase completo dos componentes mobile
+- Demonstração de todos os componentes mobile
+- Testes de touch targets e interações
+- Exemplos de layouts responsivos
+- Action sheets e navegação mobile
+```
+
+### Performance Mobile
+- **Lazy Loading**: Componentes mobile carregados condicionalmente
+- **Touch Events**: Otimização de event listeners para touch
+- **Viewport Handling**: Cálculo preciso de dimensões mobile
+- **Memory Management**: Cleanup adequado de listeners
+
 ## Build e Deploy
 
 ### Vite Configuration
 - **Fast HMR** durante desenvolvimento
 - **Optimized builds** para produção
 - **Asset optimization** automática
+- **Mobile-first bundling** com code splitting
 
 ### Environment Variables
 ```bash
@@ -239,3 +325,4 @@ VITE_SUPABASE_ANON_KEY=your_anon_key
 1. `npm run build` - Build otimizado
 2. Deploy para Vercel/Netlify/similar
 3. Configure custom domain se necessário
+4. Test mobile performance e responsividade
