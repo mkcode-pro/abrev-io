@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Plus, Settings, Eye, Edit } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import { MobileLayout } from '@/components/layout/MobileLayout'
 import { ResponsiveContainer } from '@/components/layout/ResponsiveContainer'
 import { ResponsiveGrid } from '@/components/layout/ResponsiveGrid'
@@ -9,11 +10,14 @@ import { MobileActionSheet } from '@/components/mobile/MobileActionSheet'
 import { MobileTabs } from '@/components/mobile/MobileTabs'
 import { MobileOptimizedButton } from '@/components/ui/mobile-optimized-button'
 import { useMobileOptimized } from '@/hooks/useMobileOptimized'
+import { useToast } from '@/hooks/use-toast'
 
 export default function MobileDemo() {
   const [showActionSheet, setShowActionSheet] = useState(false)
   const [activeTab, setActiveTab] = useState('overview')
   const { isMobile } = useMobileOptimized()
+  const navigate = useNavigate()
+  const { toast } = useToast()
 
   const tabs = [
     {
@@ -35,7 +39,14 @@ export default function MobileDemo() {
                 onClick={() => setShowActionSheet(true)}
               >
                 <div className="mt-2">
-                  <MobileOptimizedButton size="sm" variant="outline">
+                  <MobileOptimizedButton 
+                    size="sm" 
+                    variant="outline"
+                    onClick={() => {
+                      setActiveTab('links')
+                      toast({ title: "Navegando para Bio Links" })
+                    }}
+                  >
                     Ver Todos
                   </MobileOptimizedButton>
                 </div>
@@ -48,7 +59,14 @@ export default function MobileDemo() {
                 icon={<Settings className="w-5 h-5" />}
               >
                 <div className="mt-2">
-                  <MobileOptimizedButton size="sm" variant="gradient">
+                  <MobileOptimizedButton 
+                    size="sm" 
+                    variant="gradient"
+                    onClick={() => {
+                      setShowActionSheet(true)
+                      toast({ title: "Abrindo criador de URL" })
+                    }}
+                  >
                     Criar Nova
                   </MobileOptimizedButton>
                 </div>
@@ -61,7 +79,10 @@ export default function MobileDemo() {
                 icon={<Eye className="w-5 h-5" />}
               >
                 <div className="mt-2">
-                  <MobileOptimizedButton size="sm">
+                  <MobileOptimizedButton 
+                    size="sm"
+                    onClick={() => navigate('/analytics')}
+                  >
                     Ver Relatório
                   </MobileOptimizedButton>
                 </div>
@@ -84,13 +105,26 @@ export default function MobileDemo() {
                 title={`Bio Link ${i}`}
                 subtitle={`@usuario${i}`}
                 variant="action"
-                onClick={() => console.log(`Editando link ${i}`)}
+                onClick={() => {
+                  toast({ title: `Bio Link ${i} selecionado` })
+                }}
               >
                 <div className="flex gap-2 mt-3">
-                  <MobileOptimizedButton size="sm" variant="outline">
+                  <MobileOptimizedButton 
+                    size="sm" 
+                    variant="outline"
+                    onClick={() => navigate('/editor')}
+                  >
                     Editar
                   </MobileOptimizedButton>
-                  <MobileOptimizedButton size="sm" variant="ghost">
+                  <MobileOptimizedButton 
+                    size="sm" 
+                    variant="ghost"
+                    onClick={() => {
+                      window.open(`/@usuario${i}`, '_blank')
+                      toast({ title: `Abrindo página do usuário ${i}` })
+                    }}
+                  >
                     Ver Página
                   </MobileOptimizedButton>
                 </div>
@@ -137,8 +171,9 @@ export default function MobileDemo() {
             variant="gradient" 
             className="w-full"
             onClick={() => {
-              console.log('Criar Bio Link')
+              navigate('/editor')
               setShowActionSheet(false)
+              toast({ title: "Navegando para o editor" })
             }}
           >
             <Plus className="w-4 h-4 mr-2" />
@@ -149,8 +184,9 @@ export default function MobileDemo() {
             variant="outline" 
             className="w-full border-white/20 text-white hover:bg-white/10"
             onClick={() => {
-              console.log('Encurtar URL')
+              navigate('/dashboard')
               setShowActionSheet(false)
+              toast({ title: "Navegando para encurtador" })
             }}
           >
             Encurtar URL
