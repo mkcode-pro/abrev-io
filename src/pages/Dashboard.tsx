@@ -6,6 +6,8 @@ import { QuickActions } from "@/components/dashboard/QuickActions"
 import { StatsCards } from "@/components/dashboard/StatsCards"
 import { BiolinksGrid } from "@/components/dashboard/BiolinksGrid"
 import { UrlShortenerCard } from "@/components/dashboard/UrlShortenerCard"
+import { MobileLayout } from "@/components/layout/MobileLayout"
+import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { cn } from "@/lib/utils"
 
@@ -22,7 +24,10 @@ export default function Dashboard() {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-gradient-hero">
+      <MobileLayout 
+        hasBottomNav={isMobile} 
+        className="min-h-screen flex w-full bg-gradient-hero"
+      >
         {/* Desktop Sidebar */}
         {!isMobile && <AppSidebar />}
         
@@ -31,10 +36,11 @@ export default function Dashboard() {
           <DashboardHeader userName={userData.name} />
 
           {/* Content */}
-          <div className={cn(
-            "space-y-6",
-            isMobile ? "p-4 pb-20" : "p-6 space-y-8"
-          )}>
+          <ResponsiveContainer 
+            size="xl" 
+            padding={isMobile ? "md" : "lg"}
+            className="space-y-6"
+          >
             {/* Quick Actions - Hidden on mobile, replaced by bottom nav */}
             {!isMobile && (
               <section className="animate-fade-in">
@@ -63,12 +69,12 @@ export default function Dashboard() {
             <section className="animate-fade-in">
               <UrlShortenerCard />
             </section>
-          </div>
+          </ResponsiveContainer>
         </main>
 
         {/* Mobile Bottom Navigation */}
         {isMobile && <MobileBottomNav />}
-      </div>
+      </MobileLayout>
     </SidebarProvider>
   )
 }

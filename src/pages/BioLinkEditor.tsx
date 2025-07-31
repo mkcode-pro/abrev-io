@@ -6,6 +6,10 @@ import { ProfileEditor } from "@/components/biolink-editor/ProfileEditor"
 import { LinksManager } from "@/components/biolink-editor/LinksManager"
 import { BioLinkPreview, UserData } from "@/components/biolink-editor/BioLinkPreview"
 import { LinkData } from "@/components/biolink-editor/SortableLinkItem"
+import { MobileLayout } from "@/components/layout/MobileLayout"
+import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer"
+import { MobileHeader } from "@/components/mobile/MobileHeader"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 // Mock user data
 const initialUserData: UserData = {
@@ -29,6 +33,7 @@ export default function BioLinkEditor() {
   const [links, setLinks] = useState(initialLinks)
   const [activeTab, setActiveTab] = useState<'edit' | 'preview'>('edit')
   const [isSaving, setIsSaving] = useState(false)
+  const isMobile = useIsMobile()
 
   const handleUserDataUpdate = (updates: Partial<UserData>) => {
     setUserData(prev => ({ ...prev, ...updates }))
@@ -47,82 +52,117 @@ export default function BioLinkEditor() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-hero">
-      {/* Mobile Tab Navigation */}
-      <div className="lg:hidden flex bg-glass border-b border-white/10">
-        <button
-          onClick={() => setActiveTab('edit')}
-          className={`flex-1 p-4 text-center font-medium transition-colors ${
-            activeTab === 'edit' 
-              ? 'text-neon-blue border-b-2 border-neon-blue' 
-              : 'text-white/60'
-          }`}
-        >
-          Editar
-        </button>
-        <button
-          onClick={() => setActiveTab('preview')}
-          className={`flex-1 p-4 text-center font-medium transition-colors ${
-            activeTab === 'preview' 
-              ? 'text-neon-blue border-b-2 border-neon-blue' 
-              : 'text-white/60'
-          }`}
-        >
-          Preview
-        </button>
-      </div>
-
-      <div className="flex h-screen">
-        {/* Editor Panel */}
-        <div className={`flex-1 p-6 overflow-auto ${activeTab !== 'edit' ? 'hidden lg:block' : ''}`}>
-          <div className="max-w-2xl mx-auto space-y-6">
-            {/* Header */}
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-2xl font-bold text-white">Editor de Bio Link</h1>
-                <p className="text-white/60">Personalize sua página de links</p>
-              </div>
-              
-              <div className="flex gap-2">
-                <Button 
-                  onClick={handlePreview}
-                  variant="outline" 
-                  className="border-white/20 text-white hover:bg-white/10"
-                >
-                  <Eye className="w-4 h-4 mr-2" />
-                  Visualizar
-                </Button>
-                <Button 
-                  onClick={handleSave}
-                  variant="gradient" 
-                  className="btn-futuristic"
-                  disabled={isSaving}
-                >
-                  <Save className="w-4 h-4 mr-2" />
-                  {isSaving ? 'Salvando...' : 'Salvar'}
-                </Button>
-              </div>
-            </div>
-
-            {/* Profile Settings */}
-            <ProfileEditor
-              userData={userData}
-              onUpdate={handleUserDataUpdate}
-            />
-
-            {/* Links Management */}
-            <LinksManager
-              links={links}
-              onLinksChange={setLinks}
-            />
+    <MobileLayout hasTopNav={isMobile} className="min-h-screen bg-gradient-hero">
+      {/* Mobile Header */}
+      <MobileHeader 
+        title="Editor de Bio Link"
+        subtitle="Personalize sua página de links"
+        showSettings
+        actions={
+          <div className="flex gap-2">
+            <Button 
+              onClick={handlePreview}
+              variant="outline" 
+              size="sm"
+              className="border-white/20 text-white hover:bg-white/10"
+            >
+              <Eye className="w-4 h-4" />
+            </Button>
+            <Button 
+              onClick={handleSave}
+              variant="gradient" 
+              size="sm"
+              disabled={isSaving}
+            >
+              <Save className="w-4 h-4" />
+            </Button>
           </div>
+        }
+      />
+      
+      {/* Mobile Tab Navigation */}
+      {isMobile && (
+        <div className="fixed top-16 left-0 right-0 z-40 flex bg-glass border-b border-white/10">
+          <button
+            onClick={() => setActiveTab('edit')}
+            className={`flex-1 p-4 text-center font-medium transition-colors ${
+              activeTab === 'edit' 
+                ? 'text-neon-blue border-b-2 border-neon-blue' 
+                : 'text-white/60'
+            }`}
+          >
+            Editar
+          </button>
+          <button
+            onClick={() => setActiveTab('preview')}
+            className={`flex-1 p-4 text-center font-medium transition-colors ${
+              activeTab === 'preview' 
+                ? 'text-neon-blue border-b-2 border-neon-blue' 
+                : 'text-white/60'
+            }`}
+          >
+            Preview
+          </button>
+        </div>
+      )}
+
+      <div className={`flex h-screen ${isMobile ? 'pt-32' : ''}`}>
+        {/* Editor Panel */}
+        <div className={`flex-1 overflow-auto ${activeTab !== 'edit' ? 'hidden lg:block' : ''}`}>
+          <ResponsiveContainer size="lg" padding={isMobile ? 'md' : 'lg'}>
+            <div className="space-y-6">
+              {/* Desktop Header */}
+              {!isMobile && (
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h1 className="text-2xl font-bold text-white">Editor de Bio Link</h1>
+                    <p className="text-white/60">Personalize sua página de links</p>
+                  </div>
+                  
+                  <div className="flex gap-2">
+                    <Button 
+                      onClick={handlePreview}
+                      variant="outline" 
+                      className="border-white/20 text-white hover:bg-white/10"
+                    >
+                      <Eye className="w-4 h-4 mr-2" />
+                      Visualizar
+                    </Button>
+                    <Button 
+                      onClick={handleSave}
+                      variant="gradient" 
+                      className="btn-futuristic"
+                      disabled={isSaving}
+                    >
+                      <Save className="w-4 h-4 mr-2" />
+                      {isSaving ? 'Salvando...' : 'Salvar'}
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {/* Profile Settings */}
+              <ProfileEditor
+                userData={userData}
+                onUpdate={handleUserDataUpdate}
+              />
+
+              {/* Links Management */}
+              <LinksManager
+                links={links}
+                onLinksChange={setLinks}
+              />
+            </div>
+          </ResponsiveContainer>
         </div>
 
         {/* Preview Panel */}
-        <div className={`w-full lg:w-96 p-6 border-l border-white/10 ${activeTab !== 'preview' ? 'hidden lg:block' : ''}`}>
-          <BioLinkPreview userData={userData} links={links} />
+        <div className={`w-full lg:w-96 border-l border-white/10 ${activeTab !== 'preview' ? 'hidden lg:block' : ''}`}>
+          <ResponsiveContainer size="full" padding={isMobile ? 'md' : 'lg'}>
+            <BioLinkPreview userData={userData} links={links} />
+          </ResponsiveContainer>
         </div>
       </div>
-    </div>
+    </MobileLayout>
   )
 }

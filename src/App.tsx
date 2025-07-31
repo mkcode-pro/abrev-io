@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppProviders } from "@/contexts";
 import Index from "./pages/Index";
+import MobileDemo from "./pages/MobileDemo";
 import { 
   Dashboard, 
   BioLinkEditor, 
@@ -35,6 +36,7 @@ const App = () => (
           }>
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/demo" element={<MobileDemo />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/dashboard/editor" element={<BioLinkEditor />} />
               <Route path="/dashboard/analytics" element={<Analytics />} />
