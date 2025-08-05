@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppProviders } from "@/contexts";
+import { AppLayout } from "@/components/layout/AppLayout";
 import Index from "./pages/Index";
 import MobileDemo from "./pages/MobileDemo";
 import { 
@@ -34,19 +35,21 @@ const App = () => (
               </div>
             </div>
           }>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/demo" element={<MobileDemo />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/dashboard/editor" element={<BioLinkEditor />} />
-              <Route path="/dashboard/analytics" element={<Analytics />} />
-              <Route path="/dashboard/settings" element={<Settings />} />
-              <Route path="/pricing" element={<Pricing />} />
-              <Route path="/bio/:username" element={<BioLink />} />
-              <Route path="/joaosilva" element={<BioLink />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            <AppLayout>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/demo" element={<MobileDemo />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/dashboard/editor" element={<BioLinkEditor />} />
+                <Route path="/dashboard/analytics" element={<Analytics />} />
+                <Route path="/dashboard/settings" element={<Settings />} />
+                <Route path="/pricing" element={<Pricing />} />
+                <Route path="/bio/:username" element={<BioLink />} />
+                <Route path="/joaosilva" element={<BioLink />} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </AppLayout>
           </Suspense>
         </BrowserRouter>
       </TooltipProvider>
