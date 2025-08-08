@@ -164,13 +164,13 @@ export default function Settings() {
   const displayAvatar = preview || avatarUrl;
 
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden">
+    <div className="min-h-screen bg-background relative overflow-x-hidden">
       {/* Grid pattern background */}
       <div className="absolute inset-0 grid-pattern opacity-20" />
       
-      <div className="relative z-10 container mx-auto px-4 py-8 max-w-4xl">
+      <div className="relative z-10 container mx-auto px-4 py-8 pb-28 md:pb-8 max-w-4xl">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
           <div className="flex items-center gap-4">
             <Button
               variant="ghost"
@@ -181,7 +181,7 @@ export default function Settings() {
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div>
-              <h1 className="text-3xl font-bold neon-text">Configurações</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold neon-text">Configurações</h1>
               <p className="text-muted-foreground">Gerencie sua conta e preferências</p>
               {hasUnsavedChanges && (
                 <div className="flex items-center gap-2 mt-1">
@@ -192,9 +192,10 @@ export default function Settings() {
             </div>
           </div>
           <Button 
+            type="button"
             onClick={handleSaveClick} 
             disabled={saving || !hasUnsavedChanges}
-            className="bg-gradient-primary hover:opacity-90"
+            className="w-full sm:w-auto bg-gradient-primary hover:opacity-90"
           >
             {saving ? (
               <div className="flex items-center gap-2">
