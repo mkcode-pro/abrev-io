@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { Link2, FileText, BarChart3, X } from "lucide-react"
+import { Link2, FileText, BarChart3 } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { cn } from "@/lib/utils"
 
@@ -59,14 +59,6 @@ export function CentralMenuModal({ children, open, onOpenChange }: CentralMenuMo
               <h2 className="text-xl font-bold text-foreground">Menu Rápido</h2>
               <p className="text-sm text-foreground/60">Escolha uma ação</p>
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => onOpenChange(false)}
-              className="h-8 w-8 rounded-full text-foreground/60 hover:text-foreground"
-            >
-              <X className="h-4 w-4" />
-            </Button>
           </div>
 
           {/* Menu Items */}
