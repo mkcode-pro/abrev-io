@@ -45,15 +45,18 @@ export function MobileBottomNav({ className }: MobileBottomNavProps) {
   ]
 
   return (
-    <nav className={cn(
-      "fixed bottom-0 left-0 right-0 z-50 md:hidden",
-      "glass backdrop-blur-xl border-t border-white/10 bg-background/90",
-      "px-4 py-2 pb-safe-bottom",
-      className
-    )}>
-      <div className="flex items-center justify-between max-w-md mx-auto relative">
+    <nav
+      role="navigation"
+      aria-label="Navegação inferior"
+      className={cn(
+        "fixed bottom-0 left-0 right-0 z-50 md:hidden",
+        "glass backdrop-blur-xl border-t border-white/10 bg-background/90",
+        "px-4 py-2 pb-safe-bottom",
+        className
+      )}>
+      <div className="grid grid-cols-5 items-end max-w-md mx-auto relative gap-1">
         {/* Left Navigation Items */}
-        <div className="flex items-center gap-2">
+        <div className="col-span-2 flex items-center justify-start gap-1">
           {leftNavItems.map((item) => {
             const Icon = item.icon
             return (
@@ -62,8 +65,9 @@ export function MobileBottomNav({ className }: MobileBottomNavProps) {
                 variant="ghost"
                 size="sm"
                 onClick={() => navigate(item.path)}
+                aria-current={item.isActive ? "page" : undefined}
                 className={cn(
-                  "flex flex-col items-center gap-1 px-3 py-2 h-auto min-w-0",
+                  "flex flex-col items-center gap-1 px-2 py-2 h-auto flex-1 min-w-0",
                   "text-foreground/60 hover:text-primary transition-all duration-200",
                   "hover:bg-white/5 rounded-xl",
                   item.isActive && "text-primary bg-white/10"
@@ -84,8 +88,11 @@ export function MobileBottomNav({ className }: MobileBottomNavProps) {
           })}
         </div>
 
-        {/* Central Logo Button */}
-        <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-2">
+        {/* Center spacer to reserve space for the floating action button */}
+        <div className="col-span-1" aria-hidden />
+
+        {/* Central Action Button */}
+        <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-4">
           <CentralMenuModal open={isMenuOpen} onOpenChange={setIsMenuOpen}>
             <Button
               className={cn(
@@ -104,7 +111,7 @@ export function MobileBottomNav({ className }: MobileBottomNavProps) {
         </div>
 
         {/* Right Navigation Items */}
-        <div className="flex items-center gap-2">
+        <div className="col-span-2 flex items-center justify-end gap-1">
           {rightNavItems.map((item) => {
             const Icon = item.icon
             return (
@@ -113,8 +120,9 @@ export function MobileBottomNav({ className }: MobileBottomNavProps) {
                 variant="ghost"
                 size="sm"
                 onClick={() => navigate(item.path)}
+                aria-current={item.isActive ? "page" : undefined}
                 className={cn(
-                  "flex flex-col items-center gap-1 px-3 py-2 h-auto min-w-0",
+                  "flex flex-col items-center gap-1 px-2 py-2 h-auto flex-1 min-w-0",
                   "text-foreground/60 hover:text-primary transition-all duration-200",
                   "hover:bg-white/5 rounded-xl",
                   item.isActive && "text-primary bg-white/10"
