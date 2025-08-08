@@ -22,10 +22,10 @@ export function MobileBottomNav({ className }: MobileBottomNavProps) {
       isActive: location.pathname === "/dashboard"
     },
     { 
-      icon: BarChart3, 
-      label: "Analytics", 
-      path: "/analytics",
-      isActive: location.pathname === "/analytics"
+      icon: BarChart3,
+      label: "Analytics",
+      path: "/dashboard/analytics",
+      isActive: location.pathname === "/dashboard/analytics"
     }
   ]
 
@@ -33,14 +33,14 @@ export function MobileBottomNav({ className }: MobileBottomNavProps) {
     { 
       icon: Link, 
       label: "Links", 
-      path: "/dashboard/links",
-      isActive: location.pathname.includes("/dashboard/links")
+      path: "/dashboard/editor",
+      isActive: location.pathname.includes("/dashboard/editor")
     },
     { 
       icon: Settings, 
       label: "Config", 
-      path: "/settings",
-      isActive: location.pathname === "/settings"
+      path: "/dashboard/settings",
+      isActive: location.pathname === "/dashboard/settings"
     }
   ]
 
